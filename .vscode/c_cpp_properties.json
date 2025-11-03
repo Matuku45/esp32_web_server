@@ -10,6 +10,7 @@
             "includePath": [
                 "C:/Users/Thabiso/Documents/shuttle-booking-system/esp32_web_server/include",
                 "C:/Users/Thabiso/Documents/shuttle-booking-system/esp32_web_server/src",
+                "C:/Users/Thabiso/Documents/shuttle-booking-system/esp32_web_server/.pio/libdeps/esp32dev/ArduinoJson/src",
                 "C:/Users/Thabiso/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                 "C:/Users/Thabiso/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                 "C:/Users/Thabiso/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
@@ -246,6 +247,7 @@
                 "path": [
                     "C:/Users/Thabiso/Documents/shuttle-booking-system/esp32_web_server/include",
                     "C:/Users/Thabiso/Documents/shuttle-booking-system/esp32_web_server/src",
+                    "C:/Users/Thabiso/Documents/shuttle-booking-system/esp32_web_server/.pio/libdeps/esp32dev/ArduinoJson/src",
                     "C:/Users/Thabiso/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                     "C:/Users/Thabiso/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                     "C:/Users/Thabiso/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",

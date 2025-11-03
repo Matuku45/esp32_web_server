@@ -1,7 +1,6 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <uri/UriBraces.h>
-#include <ArduinoJson.h>
 
 #define WIFI_SSID "Wokwi-GUEST"
 #define WIFI_PASSWORD ""
@@ -15,6 +14,11 @@ const int LED2 = 27;
 bool led1State = false;
 bool led2State = false;
 
+// Timing for logging
+unsigned long lastLogTime = 0;
+const unsigned long logInterval = 1000; // 1 second
+
+// Send the web page to browser
 void sendHtml() {
   String response = R"(
     <!DOCTYPE html><html>
@@ -27,15 +31,12 @@ void sendHtml() {
           h1 { margin-bottom: 1.2em; } 
           h2 { margin: 0; }
           div { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; grid-auto-flow: column; grid-gap: 1em; }
-          .btn { background-color: #5B5; border: none; color: #fff; padding: 0.5em 1em;
-                 font-size: 2em; text-decoration: none }
+          .btn { background-color: #5B5; border: none; color: #fff; padding: 0.5em 1em; font-size: 2em; text-decoration: none }
           .btn.OFF { background-color: #333; }
         </style>
       </head>
-            
       <body>
         <h1>ESP32 Web Server</h1>
-
         <div>
           <h2>LED 1</h2>
           <a href="/toggle/1" class="btn LED1_TEXT">LED1_TEXT</a>
@@ -45,41 +46,46 @@ void sendHtml() {
       </body>
     </html>
   )";
+
   response.replace("LED1_TEXT", led1State ? "ON" : "OFF");
   response.replace("LED2_TEXT", led2State ? "ON" : "OFF");
   server.send(200, "text/html", response);
 }
 
+// Log LED states + dynamic data every second
 void logStatus() {
-  StaticJsonDocument<200> doc;
-  doc["led1"] = led1State ? "ON" : "OFF";
-  doc["led2"] = led2State ? "ON" : "OFF";
-  doc["temperature"] = random(20, 35);
-  doc["humidity"] = random(40, 80);
-  doc["timestamp"] = millis();
-  String jsonString;
-  serializeJson(doc, jsonString);
+  int temperature = random(20, 35);
+  int humidity = random(40, 80);
+
+  String jsonString = "{";
+  jsonString += "\"led1\":\"" + String(led1State ? "ON" : "OFF") + "\",";
+  jsonString += "\"led2\":\"" + String(led2State ? "ON" : "OFF") + "\",";
+  jsonString += "\"temperature\":" + String(temperature) + ",";
+  jsonString += "\"humidity\":" + String(humidity) + ",";
+  jsonString += "\"timestamp\":" + String(millis());
+  jsonString += "}";
+
   Serial.println(jsonString);
 }
 
-void setup(void) {
+void setup() {
   Serial.begin(115200);
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
   randomSeed(analogRead(0));
 
+  // Connect to WiFi
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD, WIFI_CHANNEL);
-  Serial.print("Connecting to WiFi ");
-  Serial.print(WIFI_SSID);
+  Serial.print("Connecting to WiFi " WIFI_SSID);
   while (WiFi.status() != WL_CONNECTED) {
     delay(100);
     Serial.print(".");
   }
   Serial.println(" Connected!");
-
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
+  // Web server routes
   server.on("/", sendHtml);
 
   server.on(UriBraces("/toggle/{}"), []() {
@@ -105,12 +111,14 @@ void setup(void) {
   Serial.println("HTTP server started");
 }
 
-void loop(void) {
+void loop() {
   server.handleClient();
-  static unsigned long lastLogTime = 0;
-  if (millis() - lastLogTime >= 1000) {
+
+  // Log every second
+  if (millis() - lastLogTime >= logInterval) {
     lastLogTime = millis();
     logStatus();
   }
-  delay(100);
+
+  delay(50);
 }
