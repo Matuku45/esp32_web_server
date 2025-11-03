@@ -1,1 +1,6 @@
-{"sensor": 26907, "temperature": 7417*15/32768+20, "humidity": 14288*40/32768+40, "timestamp": "22:42:06"} 
+{
+  "sensor": 26907,
+  "temperature": 23.4,
+  "humidity": 57.4,
+  "timestamp": "22:42:06"
+}
