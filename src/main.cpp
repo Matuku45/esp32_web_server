@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <uri/UriBraces.h>
+#include <ArduinoJson.h>
 
 #define WIFI_SSID "Wokwi-GUEST"
 #define WIFI_PASSWORD ""
@@ -50,10 +51,13 @@ void sendHtml() {
 }
 
 void logStatus() {
-  Serial.print("LED1: ");
-  Serial.print(led1State ? "ON" : "OFF");
-  Serial.print(", LED2: ");
-  Serial.println(led2State ? "ON" : "OFF");
+  StaticJsonDocument<200> doc;
+  doc["led1"] = led1State ? "ON" : "OFF";
+  doc["led2"] = led2State ? "ON" : "OFF";
+  doc["timestamp"] = millis();
+  String jsonString;
+  serializeJson(doc, jsonString);
+  Serial.println(jsonString);
 }
 
 void setup(void) {
