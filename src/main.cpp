@@ -49,6 +49,13 @@ void sendHtml() {
   server.send(200, "text/html", response);
 }
 
+void logStatus() {
+  Serial.print("LED1: ");
+  Serial.print(led1State ? "ON" : "OFF");
+  Serial.print(", LED2: ");
+  Serial.println(led2State ? "ON" : "OFF");
+}
+
 void setup(void) {
   Serial.begin(115200);
   pinMode(LED1, OUTPUT);
@@ -93,5 +100,6 @@ void setup(void) {
 
 void loop(void) {
   server.handleClient();
-  delay(2);
+  logStatus();
+  delay(1000);
 }
