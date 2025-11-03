@@ -107,6 +107,10 @@ void setup(void) {
 
 void loop(void) {
   server.handleClient();
-  logStatus();
-  delay(1000);
+  static unsigned long lastLogTime = 0;
+  if (millis() - lastLogTime >= 1000) {
+    lastLogTime = millis();
+    logStatus();
+  }
+  delay(100);
 }
