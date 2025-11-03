@@ -54,6 +54,8 @@ void logStatus() {
   StaticJsonDocument<200> doc;
   doc["led1"] = led1State ? "ON" : "OFF";
   doc["led2"] = led2State ? "ON" : "OFF";
+  doc["temperature"] = random(20, 35);
+  doc["humidity"] = random(40, 80);
   doc["timestamp"] = millis();
   String jsonString;
   serializeJson(doc, jsonString);
@@ -64,6 +66,7 @@ void setup(void) {
   Serial.begin(115200);
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
+  randomSeed(analogRead(0));
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD, WIFI_CHANNEL);
   Serial.print("Connecting to WiFi ");
