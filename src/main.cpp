@@ -1,19 +1,32 @@
-#include <Arduino.h>
+#include <WiFi.h>
+#include <WebServer.h>
 
-const int LED_BUILTIN_PIN = 2; // Most ESP32 boards use GPIO 2 for the onboard LED
+#define WIFI_SSID "Wokwi-GUEST"
+#define WIFI_PASSWORD ""
+#define WIFI_CHANNEL 6
 
-void setup() {
+WebServer server(80);
+
+void setup(void) {
   Serial.begin(115200);
-  pinMode(LED_BUILTIN_PIN, OUTPUT);
-  Serial.println("✅ ESP32 LED Blink Test Starting...");
+
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD, WIFI_CHANNEL);
+  Serial.print("Connecting to WiFi ");
+  Serial.print(WIFI_SSID);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(100);
+    Serial.print(".");
+  }
+  Serial.println(" Connected!");
+
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  server.begin();
+  Serial.println("HTTP server started");
 }
 
-void loop() {
-  digitalWrite(LED_BUILTIN_PIN, HIGH); // LED ON
-  Serial.println("💡 LED ON");
-  delay(1000);
-
-  digitalWrite(LED_BUILTIN_PIN, LOW);  // LED OFF
-  Serial.println("🌑 LED OFF");
-  delay(1000);
+void loop(void) {
+  server.handleClient();
+  delay(2);
 }
